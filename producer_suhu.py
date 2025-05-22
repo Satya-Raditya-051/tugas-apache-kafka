@@ -9,7 +9,7 @@ producer = KafkaProducer(bootstrap_servers='localhost:9092',
 id_gudang = ['G1', 'G2', 'G3']
 
 while True:
-    data = {"gudang_id": random.choice(id_gudang), "suhu": random.randint(20, 90)}
+    data = {"id_gudang": random.choice(id_gudang), "suhu": random.randint(20, 90)}
     producer.send('sensor-suhu-gudang', value=data)
     print(f"Sent Suhu: {data}")
     time.sleep(1)

@@ -1,22 +1,23 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import from_json, col, expr, window
 from pyspark.sql.types import StructType, StringType, IntegerType
-
+from pyspark.sql.functions import col
 # Inisialisasi Spark
 spark = SparkSession.builder \
     .appName("Gudang Monitoring") \
+    .config("spark.jars", "C:/KAFKA/kafka_2.13-3.7.0/libs/libsspark-sql-kafka-0-10_2.12-3.5.0.jar,C:/KAFKA/kafka_2.13-3.7.0/libs/kafka-clients-3.5.0.jar") \
     .getOrCreate()
 
 spark.sparkContext.setLogLevel("WARN")
 
 # Schema untuk suhu
 schema_suhu = StructType() \
-    .add("gudang_id", StringType()) \
+    .add("id_gudang", StringType()) \
     .add("suhu", IntegerType())
 
 # Schema untuk kelembaban
 schema_kelembaban = StructType() \
-    .add("gudang_id", StringType()) \
+    .add("id_gudang", StringType()) \
     .add("kelembaban", IntegerType())
 
 # Baca stream suhu
@@ -47,18 +48,23 @@ kelembaban_parsed = kelembaban_df.selectExpr("CAST(value AS STRING)") \
 peringatan_suhu = suhu_parsed.filter(col("suhu") > 80)
 peringatan_kelembaban = kelembaban_parsed.filter(col("kelembaban") > 70)
 
-# Gabungkan stream berdasarkan gudang_id dan window 10 detik
-joined = suhu_parsed.join(
-    kelembaban_parsed,
+# Gabungkan stream berdasarkan id_gudang dan window 10 detik
+
+s = suhu_parsed.alias("s")
+k = kelembaban_parsed.alias("k")
+
+joined = s.join(
+    k,
     expr("""
-        gudang_id = gudang_id AND
-        suhu_parsed.timestamp BETWEEN kelembaban_parsed.timestamp - interval 10 seconds AND kelembaban_parsed.timestamp + interval 10 seconds
+        s.id_gudang = k.id_gudang AND
+        s.timestamp BETWEEN k.timestamp - interval 10 seconds AND k.timestamp + interval 10 seconds
     """),
     "inner"
 ).select(
-    suhu_parsed.gudang_id.alias("gudang_id"),
-    "suhu", "kelembaban",
-    suhu_parsed.timestamp.alias("timestamp")
+    col("s.id_gudang").alias("id_gudang"),
+    col("s.suhu"),
+    col("k.kelembaban"),
+    col("s.timestamp").alias("timestamp")
 )
 
 # Tambahkan status
