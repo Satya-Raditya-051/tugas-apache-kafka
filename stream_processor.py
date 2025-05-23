@@ -5,7 +5,6 @@ from pyspark.sql.functions import col
 # Inisialisasi Spark
 spark = SparkSession.builder \
     .appName("Gudang Monitoring") \
-    .config("spark.jars", "C:/KAFKA/kafka_2.13-3.7.0/libs/libsspark-sql-kafka-0-10_2.12-3.5.0.jar,C:/KAFKA/kafka_2.13-3.7.0/libs/kafka-clients-3.5.0.jar") \
     .getOrCreate()
 
 spark.sparkContext.setLogLevel("WARN")
