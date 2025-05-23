@@ -6,10 +6,9 @@ Kelas: B
  
 #### Latar Belakang Masalah
 Sebuah perusahaan logistik mengelola beberapa gudang penyimpanan yang menyimpan barang sensitif seperti makanan, obat-obatan, dan elektronik. Untuk menjaga kualitas penyimpanan, gudang-gudang tersebut dilengkapi dengan dua jenis sensor:
-
   - Sensor Suhu
-
   - Sensor Kelembaban
+    
 Sensor akan mengirimkan data setiap detik. Perusahaan ingin memantau kondisi gudang secara real-time untuk mencegah kerusakan barang akibat suhu terlalu tinggi atau kelembaban berlebih.
 
 
@@ -17,7 +16,7 @@ Sensor akan mengirimkan data setiap detik. Perusahaan ingin memantau kondisi gud
 Buat dua topik di Apache Kafka:
   - sensor-suhu-gudang:
     `./bin/kafka-topics.sh --create --topic sensor-suhu-gudang --bootstrap-server localhost:9092`
-  -sensor-kelembaban-gudang:
+  - sensor-kelembaban-gudang:
     `./bin/kafka-topics.sh --create --topic sensor-kelembaban-gudang --bootstrap-server localhost:9092`
     ![image](https://github.com/user-attachments/assets/5d39ce42-b41c-4231-9af6-5c81cadc7f1a)
 
@@ -25,17 +24,19 @@ Buat dua topik di Apache Kafka:
 Buat dua Kafka producer terpisah:
 
   a. Producer Suhu
-    ![image](https://github.com/user-attachments/assets/f4798062-bb0b-4812-b4d9-5803950cfe8e)
-    mengirimkan data setiap detik dengan Format {"gudang_id": "G1", "suhu": x}
-    hasil:
-    ![image](https://github.com/user-attachments/assets/a89ad5bd-e280-48ca-ba31-aec376de1e2c)
+      kode:
+      ![image](https://github.com/user-attachments/assets/f4798062-bb0b-4812-b4d9-5803950cfe8e)<br>
+      mengirimkan data setiap detik dengan Format {"gudang_id": "G1", "suhu": x} <br>
+      hasil: <br>
+      ![image](https://github.com/user-attachments/assets/a89ad5bd-e280-48ca-ba31-aec376de1e2c)
 
   
   b. Producer Kelembaban
-    ![image](https://github.com/user-attachments/assets/e27582fe-80e7-44d7-ae14-53201c4ec676)
-    mengirimkan data setiap detik dengan Format {"gudang_id": "G1", "kelembaban": 75}
-    hasil:
-    ![image](https://github.com/user-attachments/assets/4bfa344b-fa9b-4657-9268-4f83156b6473)
+     kode:
+     ![image](https://github.com/user-attachments/assets/e27582fe-80e7-44d7-ae14-53201c4ec676) <br>
+     mengirimkan data setiap detik dengan Format {"gudang_id": "G1", "kelembaban": 75} <br>
+     hasil: <br>
+     ![image](https://github.com/user-attachments/assets/4bfa344b-fa9b-4657-9268-4f83156b6473)
 
 
 3. Konsumsi dan Olah Data dengan PySpark
